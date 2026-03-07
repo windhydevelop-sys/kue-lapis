@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL ||
   (process.env.NODE_ENV === 'production'
-    ? 'https://website-aksesoris-production.up.railway.app'
+    ? 'https://kue-lapis-production.up.railway.app'
     : 'http://localhost:3001');
 
 axios.defaults.baseURL = API_BASE_URL;
