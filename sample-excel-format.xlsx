@@ -1,0 +1,8 @@
+This would be an Excel file, but since we can't create binary files directly, here's the content that should be in an Excel spreadsheet:
+
+Sheet Name: Products
+
+| No. Order | Code Agen | Bank | Grade | KCP | NIK | Nama | Nama Ibu Kandung | Tempat/Tanggal Lahir | No. Rekening | No. ATM | Valid Thru | No. HP | PIN ATM | PIN Wondr | Password Wondr | Email | Password Email | Expired | Foto KTP | Foto Selfie |
+|-----------|-----------|------|-------|-----|-----|------|------------------|----------------------|--------------|---------|------------|--------|---------|-----------|----------------|-------|----------------|---------|---------|------------|
+| SAMPLE-001 | AGENT-XYZ-001 | BCA | PREMIUM | CABANG-JAKARTA-PUSAT | 3201010101010001 | Ahmad Susanto | Siti Aminah | Jakarta, 01 Januari 1990 | 123456789012 | 1234567890123456 | 12/25 | 081234567890 | 1234 | 5678 | SecureWondr123! | ahmad.susanto@example.com | EmailSecure456! | 2025-12-31 | secure_1763063594960-183427657.jpg | secure_1763063594960-385479040.png |
+| SAMPLE-002 | AGENT-ABC-002 | Mandiri | VIP | CABANG-BANDUNG | 3302010202020002 | Budi Santoso | Maria Sari | Bandung, 15 Mei 1985 | 987654321098 | 9876543210987654 | 06/26 | 081987654321 | 9876 | 5432 | MyWondrPass789! | budi.santoso@email.com | BudiEmail321! | 2026-06-30 | secure_1763064295732-505811072.jpg | secure_1763064295732-335657801.png |

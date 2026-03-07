@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - {{noOrder}}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 36px;
+        }
+        .header p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .info-section {
+            flex: 1;
+        }
+        .info-section h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .info-section p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+        .products-section {
+            margin-bottom: 30px;
+        }
+        .products-section h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .total-section {
+            text-align: right;
+            border-top: 2px solid #007bff;
+            padding-top: 20px;
+        }
+        .total-section h3 {
+            color: #007bff;
+            font-size: 24px;
+            margin: 0;
+        }
+        .total-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>INVOICE</h1>
+            <p>Sistem Manajemen Layanan Keuangan</p>
+            <p>Website Aksesoris</p>
+        </div>
+
+        <div class="invoice-info">
+            <div class="info-section">
+                <h3>Detail Invoice</h3>
+                <p><strong>No. Order:</strong> {{noOrder}}</p>
+                <p><strong>Tanggal Dibuat:</strong> {{createdAt}}</p>
+                <p><strong>Status:</strong> <span class="status-badge">{{status}}</span></p>
+            </div>
+            <div class="info-section">
+                <h3>Informasi Customer</h3>
+                <p><strong>Nama:</strong> {{customer}}</p>
+                <p><strong>Field Staff:</strong> {{fieldStaff}}</p>
+            </div>
+        </div>
+
+        <div class="products-section">
+            <h3>Detail Produk</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>NIK</th>
+                        <th>Nama</th>
+                        <th>Bank</th>
+                        <th>Via Bank</th>
+                        <th>No. Rekening</th>
+                        <th>Harga</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Products will be dynamically inserted here -->
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #999;">Loading products...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-section">
+            <h3>Total Pembayaran</h3>
+            <div class="total-amount">Rp {{totalHarga}}</div>
+            <p>Terima kasih atas kepercayaan Anda menggunakan layanan kami.</p>
+        </div>
+
+        <div class="footer">
+            <p>Invoice ini dihasilkan secara otomatis oleh sistem pada {{currentDate}}</p>
+            <p>&copy; 2024 Website Aksesoris. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

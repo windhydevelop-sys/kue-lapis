@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+:root {
+  --primary: #ff00ff;
+  --secondary: #00ffff;
+  --dark: #121212;
+  --light: #1e1e1e;
+  --text: #ffffff;
+}
+
+/* glow input fields */
+body.theme-original .MuiTextField-root input {
+  transition: box-shadow 0.3s ease;
+}
+body.theme-original .MuiTextField-root input:focus {
+  box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+}
+
+/* glow buttons */
+body.theme-original .MuiButton-root {
+  transition: box-shadow 0.3s ease;
+}
+body.theme-original .MuiButton-root:hover {
+  box-shadow: 0 0 10px var(--secondary), 0 0 20px var(--secondary);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+body.theme-original .glow-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--secondary), 0 0 25px var(--secondary);
+}
+
+body.theme-original {
+  background: #121921;
+  color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+body.theme-original .MuiDrawer-paper {
+  background: rgba(18, 25, 33, 0.95);
+  color: #fff;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+body.theme-original .MuiListItem-root {
+  color: #fff;
+}
+
+body.theme-original .MuiListItemIcon-root {
+  color: var(--glow-color);
+}
+
+body.theme-original .MuiContainer-root {
+  background: rgba(18, 25, 33, 0.9);
+  padding: 2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.05), 0 0 20px var(--glow-color);
+}
+
+body.theme-original .MuiButton-containedPrimary {
+  background: linear-gradient(135deg, var(--glow-color), var(--glow-color-dark));
+  color: #fff;
+}
+
+body.theme-original .MuiTextField-root .MuiInputBase-root {
+  color: #fff;
+}
+
+body.theme-original .MuiInputLabel-root {
+  color: #aaa;
+}
+
+body.theme-original .MuiTable-root {
+  background: rgba(0,0,0,0.2);
+}
+
+body.theme-original .MuiTableCell-root {
+  color: #fff;
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Scrollbar styling */
+body.theme-original ::-webkit-scrollbar {
+  width: 8px;
+}
+body.theme-original ::-webkit-scrollbar-track {
+  background: #1e2835;
+}
+body.theme-original ::-webkit-scrollbar-thumb {
+  background-color: var(--glow-color);
+  border-radius: 4px;
+}
+
+/* style outlined textfields for visibility */
+body.theme-original .MuiTextField-root .MuiOutlinedInput-root {
+  background: #1e2835;
+  color: #fff;
+}
+body.theme-original .MuiTextField-root .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255,255,255,0.4);
+}
+body.theme-original .MuiTextField-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary);
+}
+body.theme-original .MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(255,0,255,0.3);
+}
+body.theme-original .MuiInputLabel-root {
+  color: #ccc !important;
+}
+body.theme-original .MuiInputLabel-root.Mui-focused {
+  color: var(--primary) !important;
+}
+
+body.theme-original .page-title {
+  color: #fff;
+  text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+  font-weight: 600;
+}
+
+body.theme-light-mono {
+  background: #ffffff;
+  color: #111111;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+body.theme-light-mono ::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+
+body.theme-light-mono ::-webkit-scrollbar-thumb {
+  background-color: #c9c9c9;
+  border-radius: 4px;
+}

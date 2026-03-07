@@ -1,0 +1,124 @@
+/* Styles adapted from "contoh login 2/index.html" to create a glowing neon style login form. */
+
+/* Reset */
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+:root {
+  --glow-color: hsl(320, 40%, 45%);
+  --glow-color-dark: hsl(320, 40%, 35%);
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #121921;
+  padding: 2rem;
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8vmin;
+  flex-wrap: wrap;
+}
+
+.login-form {
+  background: rgba(18, 25, 33, 0.9);
+  padding: 3rem 2.5rem;
+  border-radius: 20px;
+  min-width: 320px;
+  border: 2px solid var(--glow-color);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 30px var(--glow-color), inset 0 0 15px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.login-form h2 {
+  margin: 0 0 2rem 0;
+  text-align: center;
+  font-size: 2rem;
+  text-shadow: 0 0 8px var(--glow-color);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #aaa;
+  font-size: 0.9rem;
+  text-shadow: 0 0 5px var(--glow-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--glow-color);
+  box-shadow: 0 0 10px var(--glow-color);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-group input::placeholder {
+  color: #666;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, var(--glow-color), var(--glow-color-dark));
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 20px var(--glow-color);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+.form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.forgot-link {
+  color: #888;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.forgot-link:hover {
+  color: var(--glow-color);
+  text-shadow: 0 0 10px var(--glow-color);
+}

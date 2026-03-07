@@ -1,0 +1,75 @@
+# FORMAT PDF YANG BENAR UNTUK IMPORT DATA
+
+Copy paste teks di bawah ini ke dalam file PDF (gunakan Microsoft Word atau Google Docs, lalu export ke PDF):
+
+================================================================================
+                        DATA PRODUK KEUANGAN
+                        PT. WEBSITE AKSESORIS
+================================================================================
+
+No. Order: SAMPLE-001
+Code Agen: AGENT-XYZ-001
+Bank: BCA
+Grade: PREMIUM
+KCP: CABANG-JAKARTA-PUSAT
+
+Nama: Ahmad Susanto
+NIK: 3201010101010001
+Nama Ibu Kandung: Siti Aminah
+Tempat/Tanggal Lahir: Jakarta, 01 Januari 1990
+
+No. Rekening: 123456789012
+No. ATM: 1234567890123456
+Valid Thru: 12/25
+
+No. HP: 081234567890
+PIN ATM: 1234
+PIN Wondr: 5678
+Password Wondr: SecureWondr123!
+
+Email: ahmad.susanto@example.com
+Password Email: EmailSecure456!
+
+Expired: 2025-12-31
+
+================================================================================
+UPLOAD DOKUMEN:
+- Foto KTP: secure_1763063594960-183427657.jpg
+- Foto Selfie: secure_1763063594960-385479040.png
+================================================================================
+
+---
+DATA PRODUK KEUANGAN
+PT. WEBSITE AKSESORIS
+---
+
+No. Order: SAMPLE-002
+Code Agen: AGENT-ABC-002
+Bank: Mandiri
+Grade: VIP
+KCP: CABANG-BANDUNG
+
+Nama: Budi Santoso
+NIK: 3302010202020002
+Nama Ibu Kandung: Maria Sari
+Tempat/Tanggal Lahir: Bandung, 15 Mei 1985
+
+No. Rekening: 987654321098
+No. ATM: 9876543210987654
+Valid Thru: 06/26
+
+No. HP: 081987654321
+PIN ATM: 9876
+PIN Wondr: 5432
+Password Wondr: MyWondrPass789!
+
+Email: budi.santoso@email.com
+Password Email: BudiEmail321!
+
+Expired: 2026-06-30
+
+================================================================================
+UPLOAD DOKUMEN:
+- Foto KTP: secure_1763064295732-505811072.jpg
+- Foto Selfie: secure_1763064295732-335657801.png
+================================================================================

@@ -1,0 +1,318 @@
+# 🚀 Panduan Migrasi dari Railway ke Render.com
+
+## 📋 **LANGKAH 1: BACKUP DATA RAILWAY**
+
+### 1.1 Export Environment Variables
+```bash
+# Login ke Railway CLI (jika belum)
+npm install -g @railway/cli
+railway login
+
+# Export environment variables (atau manual copy dari dashboard)
+railway variables > railway-variables.txt
+```
+
+### 1.2 Catat URL Railway Saat Ini
+- URL Backend: `https://website-aksesoris-production.up.railway.app`
+- URL Health Check: `https://website-aksesoris-production.up.railway.app/api/health`
+
+---
+
+## 📋 **LANGKAH 2: SETUP RENDER.COM**
+
+### 2.1 Buat Akun Render
+1. Kunjungi [render.com](https://render.com)
+2. Klik **"Sign Up"**
+3. **Login dengan GitHub** (recommended untuk kemudahan)
+
+### 2.2 Prepare GitHub Repository
+Pastikan code backend sudah di-push ke GitHub:
+```bash
+# Di terminal lokal Anda
+cd backend
+git add .
+git commit -m "Prepare for Render migration"
+git push origin main
+```
+
+---
+
+## 📋 **LANGKAH 3: CREATE WEB SERVICE DI RENDER**
+
+### 3.1 Buat New Web Service
+1. Di Dashboard Render, klik **"New +"**
+2. Pilih **"Web Service"**
+3. **Connect GitHub** - authorize Render untuk akses repository Anda
+4. Pilih repository `website_aksesoris`
+5. Pilih branch `main`
+
+### 3.2 Configure Web Service
+**Basic Settings:**
+```
+Name: website-aksesoris
+Region: Singapore (Southeast Asia) [closest to you]
+Branch: main
+Root Directory: backend/ (if your backend is in backend/ folder)
+```
+
+**Build & Deploy Settings:**
+```
+Runtime: Node
+Build Command: npm install
+Start Command: npm start
+```
+
+**Environment:**
+```
+Environment Variables: (akan ditambahkan nanti)
+```
+
+---
+
+## 📋 **LANGKAH 4: SET ENVIRONMENT VARIABLES**
+
+### 4.1 Add Environment Variables di Render
+Di Render Dashboard → Your Service → Environment, add:
+
+#### Required Variables:
+```bash
+NODE_ENV=production
+
+# Database (MongoDB Atlas) - same as Railway
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<database-name>?retryWrites=true&w=majority
+
+# JWT Configuration
+JWT_SECRET=<generate_32+_char_random_string>
+JWT_EXPIRE=3600
+
+# Encryption (32 character hex string)
+ENCRYPTION_KEY=<generate_32_char_hex_string>
+
+# CORS Configuration (update dengan URL frontend Vercel)
+FRONTEND_URL=https://website-aksesoris.vercel.app
+
+# Server Configuration
+PORT=5000
+
+# File Upload Configuration
+MAX_FILE_SIZE=5242880
+ALLOWED_FILE_TYPES=image/jpeg,image/png,image/jpg
+
+# Rate Limiting
+RATE_LIMIT_WINDOW=15
+RATE_LIMIT_MAX=100
+
+# Logging
+LOG_LEVEL=info
+```
+
+#### Optional Variables:
+```bash
+# Telegram Bot (if using)
+TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_WEBHOOK_URL=https://website-aksesoris.onrender.app/api/telegram/webhook
+```
+
+### 4.2 Generate Secure Keys
+```bash
+# Generate JWT Secret
+openssl rand -base64 32
+# Example: bXktc3VwZXItc2VjdXJlLWp3dC1zZWNyZXQtMzItY2hhcnMtdGhpcy1leGFtcGxl
+
+# Generate Encryption Key
+openssl rand -hex 32
+# Example: 1a2b3c4d5e6f7890abcdef1234567890abcdef1234567890abcdef123456
+```
+
+---
+
+## 📋 **LANGKAH 5: DEPLOY & MONITOR**
+
+### 5.1 Trigger Deployment
+1. Render akan auto-deploy setelah Anda save settings
+2. Atau manual trigger: Click **"Manual Deploy"** → **"Deploy latest commit"**
+
+### 5.2 Monitor Deployment
+1. Check **"Logs"** tab untuk real-time deployment logs
+2. Tunggu hingga status berubah menjadi **"Healthy"**
+
+### 5.3 Test Health Check
+```bash
+# Test dengan URL baru Render
+curl https://website-aksesoris.onrender.app/api/health
+```
+
+Expected response:
+```json
+{
+  "status": "OK",
+  "message": "Server is running",
+  "database": "connected",
+  "timestamp": "2025-12-23T08:54:03.111Z"
+}
+```
+
+---
+
+## 📋 **LANGKAH 6: UPDATE FRONTEND API URL**
+
+### 6.1 Update axios.js
+Edit file `frontend/src/utils/axios.js`:
+
+```javascript
+// OLD (Railway)
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://website-aksesoris-production.up.railway.app'
+  : 'http://localhost:3001';
+
+// NEW (Render)
+const API_BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://website-aksesoris.onrender.app'
+  : 'http://localhost:3001';
+```
+
+### 6.2 Update CORS di Backend
+Edit file `backend/server.js`, tambahkan Render URL ke allowed origins:
+
+```javascript
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001', 
+  'http://localhost:3003',
+  'http://localhost:5173',
+  'https://website-aksesoris.vercel.app',
+  'https://website-aksesoris-git-main-windhydevelop-sys.vercel.app',
+  // Railway URLs (optional - can remove)
+  'https://website-aksesoris-frontend-production.up.railway.app',
+  'https://website-aksesoris-frontend-staging.up.railway.app',
+  // NEW: Render URL
+  'https://website-aksesoris.onrender.app',
+  // Allow all vercel deployments
+  /\.vercel\.app$/,
+  process.env.FRONTEND_URL
+].filter(Boolean);
+```
+
+---
+
+## 📋 **LANGKAH 7: UPDATE MONGODB ATLAS (Jika Diperlukan)**
+
+### 7.1 Update Network Access
+1. Login ke [MongoDB Atlas](https://cloud.mongodb.com)
+2. Go to **Network Access**
+3. Add Render IP ranges atau **Allow access from anywhere** (0.0.0.0/0) for development
+
+### 7.2 Test Connection
+```bash
+# Test dari Render logs atau local
+curl https://website-aksesoris.onrender.app/api/health | jq '.database'
+# Should return: "connected"
+```
+
+---
+
+## 📋 **LANGKAH 8: TESTING LENGKAP**
+
+### 8.1 Test API Endpoints
+```bash
+# Test authentication
+curl -X POST https://website-aksesoris.onrender.app/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin123"}'
+
+# Test products endpoint
+curl https://website-aksesoris.onrender.app/api/products
+```
+
+### 8.2 Test Frontend Integration
+1. Deploy frontend updates ke Vercel
+2. Visit frontend URL
+3. Test login/register functionality
+4. Test CRUD operations
+
+---
+
+## 📋 **LANGKAH 9: FINAL CHECKLIST**
+
+### ✅ **Pre-Migration**
+- [ ] Environment variables di-backup dari Railway
+- [ ] Code di-push ke GitHub
+- [ ] MongoDB Atlas ready
+
+### ✅ **During Migration**
+- [ ] Render service created
+- [ ] Environment variables configured
+- [ ] Deployment successful
+- [ ] Health check working
+
+### ✅ **Post-Migration**
+- [ ] Frontend API URL updated
+- [ ] CORS updated for Render URL
+- [ ] All API endpoints tested
+- [ ] Frontend integration working
+- [ ] Database connectivity confirmed
+
+### ✅ **Optional Cleanup**
+- [ ] Update any hardcoded Railway URLs in documentation
+- [ ] Remove Railway service (optional - can keep as backup)
+- [ ] Update any Telegram webhooks if using
+
+---
+
+## 🚨 **TROUBLESHOOTING**
+
+### Build Fails
+```bash
+# Check Render build logs
+# Ensure package.json has correct scripts:
+# "start": "node server.js"
+# "build": "npm install" (Render auto-detects)
+```
+
+### Database Connection Issues
+```bash
+# Verify MONGO_URI format
+# Check MongoDB Atlas network access
+# Ensure database user has read/write permissions
+```
+
+### CORS Issues
+```bash
+# Verify FRONTEND_URL matches actual frontend URL
+# Check CORS configuration in server.js
+# Add Render URL to allowed origins
+```
+
+### Environment Variables Not Loading
+```bash
+# Restart service after adding environment variables
+# Click "Manual Deploy" → "Deploy latest commit"
+```
+
+---
+
+## 🎯 **EXPECTED TIMELINE**
+
+- **Setup Render Account**: 5 minutes
+- **Configure Service**: 10 minutes  
+- **Deploy**: 5-10 minutes
+- **Update Frontend**: 5 minutes
+- **Testing**: 10 minutes
+- **Total**: ~35 minutes
+
+## 🔗 **USEFUL URLs**
+
+- **Render Dashboard**: https://dashboard.render.com
+- **Your Service**: https://dashboard.render.com/create?repository=<your-repo>
+- **Live Backend**: `https://website-aksesoris.onrender.app`
+- **Health Check**: `https://website-aksesoris.onrender.app/api/health`
+
+---
+
+## 💰 **COST SAVINGS**
+
+- **Railway**: $5/month untuk reliable hosting
+- **Render**: FREE 750 jam/bulan (24/7 hosting)
+- **Savings**: $5/bulan = $60/tahun!
+
+**Congratulations! Your backend is now hosted on Render.com dengan hosting gratis 24/7!** 🎉
