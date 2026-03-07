@@ -17,7 +17,7 @@ export const createLightMonochromeTheme = () =>
     palette: {
       mode: 'light',
       background: {
-        default: '#ffffff',
+        default: '#f5f5f5',
         paper: '#ffffff',
       },
       text: {
@@ -26,11 +26,11 @@ export const createLightMonochromeTheme = () =>
       },
       divider: '#e5e5e5',
       primary: {
-        main: '#111111',
+        main: '#d32f2f',
         contrastText: '#ffffff',
       },
       secondary: {
-        main: '#111111',
+        main: '#9a0007',
         contrastText: '#ffffff',
       },
       error: {
