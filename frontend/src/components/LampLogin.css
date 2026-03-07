@@ -19,12 +19,8 @@
   --b-4: hsla(45, calc((0 + (var(--on, 0) * 0)) * 1%), calc((20 + (var(--on, 0) * 30)) * 1%), 0.25);
   --l-1: hsla(45, calc((0 + (var(--on, 0) * 20)) * 1%), calc((50 + (var(--on, 0) * 50)) * 1%), 0.85);
   --l-2: hsla(45, calc((0 + (var(--on, 0) * 20)) * 1%), calc((50 + (var(--on, 0) * 50)) * 1%), 0.85);
-  --shade-hue: 320;
-  --t-1: hsl(var(--shade-hue), calc((0 + (var(--on, 0) * 20)) * 1%), calc((30 + (var(--on, 0) * 60)) * 1%));
-  --t-2: hsl(var(--shade-hue), calc((0 + (var(--on, 0) * 20)) * 1%), calc((20 + (var(--on, 0) * 35)) * 1%));
-  --t-3: hsl(var(--shade-hue), calc((0 + (var(--on, 0) * 20)) * 1%), calc((10 + (var(--on, 0) * 20)) * 1%));
-  --glow-color: hsl(320, 40%, 45%);
-  --glow-color-dark: hsl(320, 40%, 35%);
+  --glow-color: #d32f2f;
+  --glow-color-dark: #9a0007;
 }
 
 body.theme-original {
@@ -41,8 +37,8 @@ body.theme-light-mono {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background-color: #1a1a1a;
-  background-image: linear-gradient(rgba(30, 30, 30, 0.5), rgba(30, 30, 30, 0.6)), url('../assets/login-bg.png');
+  background-color: #f5f5f5;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.4)), url('../assets/login-bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -70,9 +66,9 @@ body.theme-light-mono .container {
 }
 
 .login-form {
-  background: rgba(15, 20, 30, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 3rem 2.5rem;
   border-radius: 20px;
   min-width: 340px;
@@ -80,8 +76,8 @@ body.theme-light-mono .container {
   transform: scale(0.8) translateY(20px);
   pointer-events: none;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 body.theme-light-mono .login-form {
@@ -110,11 +106,10 @@ body.theme-light-mono .login-form.active {
 }
 
 .login-form h2 {
-  color: #fff;
+  color: #333;
   font-size: 2rem;
   margin: 0 0 2rem 0;
   text-align: center;
-  text-shadow: 0 0 8px var(--glow-color);
 }
 
 body.theme-light-mono .login-form h2 {
@@ -142,10 +137,10 @@ body.theme-light-mono .form-group label {
 .form-group input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  color: #fff;
+  color: #333;
   font-size: 1rem;
   transition: all 0.3s ease;
 }

@@ -77,10 +77,12 @@ const SidebarLayout = ({ children, onLogout }) => {
     borderRadius: 2,
     mx: 1,
     '&.Mui-selected': {
-      bgcolor: isLightMono ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.2)',
-      '&:hover': { bgcolor: isLightMono ? 'rgba(0,0,0,0.09)' : 'rgba(255,255,255,0.3)' },
+      bgcolor: 'rgba(211, 47, 47, 0.08)',
+      color: '#d32f2f',
+      '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.12)' },
+      '& .MuiListItemIcon-root': { color: '#d32f2f' }
     },
-    '&:hover': { bgcolor: isLightMono ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.1)' },
+    '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
   };
 
   return (
@@ -91,10 +93,10 @@ const SidebarLayout = ({ children, onLogout }) => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          bgcolor: isLightMono ? '#ffffff' : 'primary.main',
-          color: isLightMono ? '#111111' : 'inherit',
-          borderBottom: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
-          boxShadow: isLightMono ? 'none' : undefined,
+          bgcolor: '#ffffff',
+          color: '#333',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
+          boxShadow: 'none',
           zIndex: 1100,
         }}
       >
@@ -119,7 +121,7 @@ const SidebarLayout = ({ children, onLogout }) => {
               <AccountCircle />
             </Avatar>
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Typography variant="body1" sx={{ fontWeight: 'bold', color: isLightMono ? 'text.primary' : 'white' }}>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
                 {user.username || 'User'}
               </Typography>
               <Chip
@@ -149,10 +151,10 @@ const SidebarLayout = ({ children, onLogout }) => {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            background: isLightMono ? '#ffffff' : 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
-            color: isLightMono ? '#111111' : '#fff',
-            borderRight: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
-            boxShadow: isLightMono ? 'none' : '4px 0 20px rgba(0,0,0,0.1)',
+            background: '#ffffff',
+            color: '#333',
+            borderRight: '1px solid rgba(0,0,0,0.08)',
+            boxShadow: '4px 0 20px rgba(0,0,0,0.02)',
           },
         }}
       >

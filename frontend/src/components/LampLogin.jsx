@@ -52,10 +52,10 @@ const LampLogin = () => {
       onStart: () => {
         STATE.ON = !STATE.ON;
         gsap.set(document.documentElement, { '--on': STATE.ON ? 1 : 0 });
-        const hue = gsap.utils.random(0, 359);
+        const hue = 0; // Force Red (0 or 360)
         gsap.set(document.documentElement, { '--shade-hue': hue });
-        const glowColor = `hsl(${hue}, 40%, 45%)`;
-        const glowColorDark = `hsl(${hue}, 40%, 35%)`;
+        const glowColor = '#d32f2f';
+        const glowColorDark = '#9a0007';
         gsap.set(document.documentElement, {
           '--glow-color': glowColor,
           '--glow-color-dark': glowColorDark,
