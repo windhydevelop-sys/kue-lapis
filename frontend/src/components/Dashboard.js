@@ -1183,7 +1183,7 @@ const Dashboard = ({ setToken }) => {
         {/* Header Section */}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
           <div>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#1a237e' }}>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: '#d32f2f' }}>
               Dashboard Produk
             </Typography>
             {notifications.length > 0 && (
@@ -1209,11 +1209,10 @@ const Dashboard = ({ setToken }) => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{
-              background: isLightMono ? '#ffffff' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: isLightMono ? 'text.primary' : 'white',
-              border: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
+              background: 'linear-gradient(135deg, #d32f2f 0%, #9a0007 100%)',
+              color: 'white',
               borderRadius: 3,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              boxShadow: '0 8px 32px rgba(211, 47, 47, 0.2)',
               transition: 'transform 0.3s',
               '&:hover': { transform: 'translateY(-5px)' },
               minHeight: 220
@@ -1227,11 +1226,10 @@ const Dashboard = ({ setToken }) => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{
-              background: isLightMono ? '#ffffff' : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-              color: isLightMono ? 'text.primary' : 'white',
-              border: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
+              background: 'linear-gradient(135deg, #e53935 0%, #b71c1c 100%)',
+              color: 'white',
               borderRadius: 3,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              boxShadow: '0 8px 32px rgba(183, 28, 28, 0.2)',
               transition: 'transform 0.3s',
               '&:hover': { transform: 'translateY(-5px)' },
               minHeight: 220
@@ -1245,11 +1243,10 @@ const Dashboard = ({ setToken }) => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{
-              background: isLightMono ? '#ffffff' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-              color: isLightMono ? 'text.primary' : 'white',
-              border: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
+              background: 'linear-gradient(135deg, #f44336 0%, #c62828 100%)',
+              color: 'white',
               borderRadius: 3,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              boxShadow: '0 8px 32px rgba(198, 40, 40, 0.2)',
               transition: 'transform 0.3s',
               '&:hover': { transform: 'translateY(-5px)' },
               minHeight: 220
@@ -1263,11 +1260,10 @@ const Dashboard = ({ setToken }) => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{
-              background: isLightMono ? '#ffffff' : 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-              color: isLightMono ? 'text.primary' : 'white',
-              border: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
+              background: 'linear-gradient(135deg, #ef5350 0%, #d32f2f 100%)',
+              color: 'white',
               borderRadius: 3,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              boxShadow: '0 8px 32px rgba(211, 47, 47, 0.2)',
               transition: 'transform 0.3s',
               '&:hover': { transform: 'translateY(-5px)' },
               minHeight: 220
@@ -1281,11 +1277,10 @@ const Dashboard = ({ setToken }) => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{
-              background: isLightMono ? '#ffffff' : 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
-              color: isLightMono ? 'text.primary' : 'white',
-              border: isLightMono ? '1px solid rgba(0,0,0,0.12)' : 'none',
+              background: 'linear-gradient(135deg, #e57373 0%, #c62828 100%)',
+              color: 'white',
               borderRadius: 3,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+              boxShadow: '0 8px 32px rgba(198, 40, 40, 0.2)',
               transition: 'transform 0.3s',
               '&:hover': { transform: 'translateY(-5px)' },
               minHeight: 220,
@@ -1492,17 +1487,17 @@ const Dashboard = ({ setToken }) => {
           <TableContainer>
             <Table aria-label="product table" stickyHeader>
               <TableHead sx={{ bgcolor: 'grey.100' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>No. Order</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Nama</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>NIK</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>No. Rekening</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Bank</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Handphone</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Expired</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Complaint</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+                <TableRow sx={{ bgcolor: '#d32f2f' }}>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>No. Order</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Nama</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>NIK</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>No. Rekening</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Bank</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Handphone</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Expired</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Status</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Complaint</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', color: '#ffffff' }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

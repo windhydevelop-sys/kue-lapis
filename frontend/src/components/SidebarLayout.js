@@ -73,16 +73,23 @@ const SidebarLayout = ({ children, onLogout }) => {
 
   const isActive = (pathPrefix) => location.pathname.startsWith(pathPrefix);
   const navItemSx = {
-    color: 'inherit',
+    color: '#ffffff',
     borderRadius: 2,
     mx: 1,
+    my: 0.5,
+    transition: 'all 0.2s',
     '&.Mui-selected': {
-      bgcolor: 'rgba(211, 47, 47, 0.08)',
+      bgcolor: '#ffffff',
       color: '#d32f2f',
-      '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.12)' },
+      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      '&:hover': { bgcolor: '#f5f5f5' },
       '& .MuiListItemIcon-root': { color: '#d32f2f' }
     },
-    '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
+    '&:hover': {
+      bgcolor: 'rgba(255,255,255,0.1)',
+      transform: 'translateX(4px)'
+    },
+    '& .MuiListItemIcon-root': { color: '#ffffff' }
   };
 
   return (
@@ -93,10 +100,10 @@ const SidebarLayout = ({ children, onLogout }) => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          bgcolor: '#ffffff',
-          color: '#333',
-          borderBottom: '1px solid rgba(0,0,0,0.08)',
-          boxShadow: 'none',
+          bgcolor: 'primary.main',
+          color: '#ffffff',
+          borderBottom: 'none',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
           zIndex: 1100,
         }}
       >
@@ -117,19 +124,19 @@ const SidebarLayout = ({ children, onLogout }) => {
             <Tooltip title={isLightMono ? 'Light Monochrome' : 'Original'} arrow>
               <Switch checked={isLightMono} onChange={toggleThemeMode} color="default" />
             </Tooltip>
-            <Avatar sx={{ bgcolor: isLightMono ? '#111111' : 'secondary.main', color: '#ffffff' }}>
+            <Avatar sx={{ bgcolor: 'secondary.main', color: '#ffffff' }}>
               <AccountCircle />
             </Avatar>
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#ffffff' }}>
                 {user.username || 'User'}
               </Typography>
               <Chip
                 label={userRole === 'user' ? 'Karyawan' : userRole === 'moderator' ? 'Member' : 'Admin'}
                 size="small"
                 sx={{
-                  bgcolor: isLightMono ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.2)',
-                  color: isLightMono ? 'text.primary' : 'white',
+                  bgcolor: 'rgba(255,255,255,0.2)',
+                  color: '#ffffff',
                   fontWeight: 'bold'
                 }}
               />
@@ -151,10 +158,10 @@ const SidebarLayout = ({ children, onLogout }) => {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            background: '#ffffff',
-            color: '#333',
-            borderRight: '1px solid rgba(0,0,0,0.08)',
-            boxShadow: '4px 0 20px rgba(0,0,0,0.02)',
+            background: 'linear-gradient(180deg, #d32f2f 0%, #9a0007 100%)',
+            color: '#ffffff',
+            borderRight: 'none',
+            boxShadow: '4px 0 20px rgba(0,0,0,0.15)',
           },
         }}
       >
