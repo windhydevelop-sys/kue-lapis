@@ -1299,7 +1299,7 @@ const Dashboard = ({ setToken }) => {
       <Container maxWidth="lg">
         <Grid container spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} md={6}>
-            <Card sx={{ borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+            <Card sx={{ borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.1)', border: '1px solid #d32f2f' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>Status Distribution</Typography>
                 <ResponsiveContainer width="100%" height={300}>
@@ -1325,7 +1325,7 @@ const Dashboard = ({ setToken }) => {
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Card sx={{ borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+            <Card sx={{ borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.1)', border: '1px solid #d32f2f' }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>Status Overview</Typography>
                 <ResponsiveContainer width="100%" height={300}>
