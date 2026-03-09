@@ -150,6 +150,12 @@ const productSchema = Joi.object({
     'any.only': 'Status produk tidak valid',
     'string.base': 'Status produk harus berupa string'
   }),
+  harga: Joi.number().min(0).optional().messages({
+    'number.base': 'Harga harus berupa angka'
+  }),
+  paymentStatus: Joi.string().valid('unpaid', 'paid').optional().messages({
+    'any.only': 'Status pembayaran tidak valid'
+  }),
   complaint: Joi.string().optional().allow('', '-').messages({
     'string.base': 'Complaint harus berupa string'
   }),
@@ -294,6 +300,12 @@ const productUpdateSchema = Joi.object({
   status: Joi.string().valid('pending', 'in_progress', 'completed', 'cancelled', 'Ready').optional().messages({
     'any.only': 'Status produk tidak valid',
     'string.base': 'Status produk harus berupa string'
+  }),
+  harga: Joi.number().min(0).optional().messages({
+    'number.base': 'Harga harus berupa angka'
+  }),
+  paymentStatus: Joi.string().valid('unpaid', 'paid').optional().messages({
+    'any.only': 'Status pembayaran tidak valid'
   }),
   complaint: Joi.string().optional().allow('', '-').messages({
     'string.base': 'Complaint harus berupa string'

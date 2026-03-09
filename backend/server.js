@@ -32,6 +32,7 @@ const balanceTransactionRoutes = require('./routes/balance-transactions');
 const handphoneRoutes = require('./routes/handphone');
 const backupRoutes = require('./routes/backup');
 const menuPermissionRoutes = require('./routes/menuPermissions');
+const accountRoutes = require('./routes/accounts');
 const User = require('./models/User');
 
 
@@ -163,6 +164,7 @@ app.use('/api/balance-transactions', balanceTransactionRoutes);
 app.use('/api/handphones', handphoneRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/menu-permissions', menuPermissionRoutes);
+app.use('/api/accounts', accountRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Global error handler

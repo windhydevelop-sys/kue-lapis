@@ -75,6 +75,15 @@ const productSchema = new mongoose.Schema({
     enum: ['pending', 'in_progress', 'completed', 'cancelled'],
     default: 'pending'
   }, // New field for product status
+  harga: {
+    type: Number,
+    default: 0
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['unpaid', 'paid'],
+    default: 'unpaid'
+  },
   source: {
     type: String,
     enum: ['web', 'telegram', 'import'],

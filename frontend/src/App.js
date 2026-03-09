@@ -25,6 +25,7 @@ import MenuPermissionsManagement from './components/MenuPermissionsManagement';
 import WorkflowManagement from './components/WorkflowManagement';
 import TelegramProductForm from './components/TelegramProductForm';
 import TelegramSubmissions from './components/TelegramSubmissions';
+import PaymentManagement from './components/PaymentManagement';
 import './App.css';
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
               <Route path="/users" element={token ? <UserManagement /> : <Navigate to="/login" />} />
               <Route path="/workflow" element={token ? <WorkflowManagement /> : <Navigate to="/login" />} />
               <Route path="/telegram-submissions" element={token ? <TelegramSubmissions /> : <Navigate to="/login" />} />
+              <Route path="/payments" element={token ? <PaymentManagement /> : <Navigate to="/login" />} />
               <Route path="/telegram-form" element={<TelegramProductForm />} />
               <Route path="/" element={<Navigate to="/login" />} />
             </Routes>

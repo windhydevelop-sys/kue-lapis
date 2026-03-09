@@ -321,7 +321,7 @@ router.post('/',
 );
 
 // Get all products with decryption
-router.get('/', addUserInfo, getProducts);
+router.get('/', auth, addUserInfo, getProducts);
 
 // Export all products with decrypted data for PDF generation
 router.get('/export', auth, addUserInfo, getProductsExport);
@@ -559,11 +559,12 @@ router.get('/search', auth, addUserInfo, async (req, res) => {
 
 
 // Get product by id with decryption
-router.get('/:id', addUserInfo, getProductById);
+router.get('/:id', auth, addUserInfo, getProductById);
 
 // Update product with validation and security
 const { updateProduct } = require('../controllers/products');
 router.put('/:id',
+  auth,
   addUserInfo,
   handleFileUpload,
   validateProductUpdate,
@@ -571,7 +572,7 @@ router.put('/:id',
 );
 
 // Delete product with security checks
-router.delete('/:id', addUserInfo, async (req, res) => {
+router.delete('/:id', auth, addUserInfo, async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -933,6 +934,11 @@ router.post('/import-document-save',
 
           const product = new Product(productData);
           await product.save();
+
+          // SYNC WITH CASHFLOW
+          const { syncProductWithCashflow } = require('../utils/cashflowHelper');
+          await syncProductWithCashflow(product, req.userId);
+
           savedProducts.push({
             id: product._id,
             nama: productData.nama,
@@ -1166,6 +1172,11 @@ router.post('/import-corrected-word', auth, wordDocumentUpload, async (req, res)
         });
         existingProduct.lastModifiedBy = req.userId;
         await existingProduct.save();
+
+        // SYNC WITH CASHFLOW
+        const { syncProductWithCashflow } = require('../utils/cashflowHelper');
+        await syncProductWithCashflow(existingProduct, req.userId);
+
         updatedCount++;
 
         // If it was a submission, mark as processed
@@ -1188,6 +1199,10 @@ router.post('/import-corrected-word', auth, wordDocumentUpload, async (req, res)
 
         const newProduct = new Product(newProductData);
         await newProduct.save();
+
+        // SYNC WITH CASHFLOW
+        const { syncProductWithCashflow } = require('../utils/cashflowHelper');
+        await syncProductWithCashflow(newProduct, req.userId);
 
         submission.status = 'processed';
         await submission.save();

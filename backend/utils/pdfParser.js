@@ -271,16 +271,20 @@ const processDocumentFile = async (filePath) => {
           if (images.length > 0) {
             logger.info(`Found ${images.length} images in PDF, uploading to Cloudinary...`);
 
-            // First image = KTP, Second image = Selfie
-            for (let i = 0; i < Math.min(images.length, 2); i++) {
+            // Distribute images to products (assuming 2 images per product: KTP then Selfie)
+            for (let i = 0; i < images.length; i++) {
+              const productIndex = Math.floor(i / 2);
+              if (!products[productIndex]) break;
+
+              const isEven = i % 2 === 0;
+              const fieldName = isEven ? 'uploadFotoId' : 'uploadFotoSelfie';
+              const label = isEven ? 'KTP' : 'Selfie';
               const img = images[i];
-              const fieldName = i === 0 ? 'uploadFotoId' : 'uploadFotoSelfie';
-              const label = i === 0 ? 'KTP' : 'Selfie';
 
               try {
                 // Upload to Cloudinary
                 const timestamp = Date.now();
-                const random = Math.floor(Math.random() * 1000000000);
+                const random = Math.floor(Math.random() * 1e9);
                 const publicId = `secure_${timestamp}_${random}`;
 
                 const uploadResult = await uploadBufferToCloudinary(img.buffer, {
@@ -289,14 +293,19 @@ const processDocumentFile = async (filePath) => {
                 });
 
                 if (uploadResult && uploadResult.secure_url) {
-                  // Assign to first product (assuming single product per PDF)
-                  if (products[0]) {
-                    products[0][fieldName] = uploadResult.secure_url;
-                    logger.info(`Successfully uploaded ${label} to Cloudinary: ${uploadResult.secure_url}`);
-                  }
+                  products[productIndex][fieldName] = uploadResult.secure_url;
+                  logger.info(`Successfully uploaded ${label} for product ${productIndex + 1} to Cloudinary: ${uploadResult.secure_url}`);
+                } else {
+                  // Fallback to base64 for preview
+                  const base64 = `data:image/${img.format || 'jpeg'};base64,${img.buffer.toString('base64')}`;
+                  products[productIndex][fieldName] = base64;
+                  logger.warn(`Cloudinary failed, using base64 fallback for ${label} product ${productIndex + 1}`);
                 }
               } catch (uploadErr) {
-                logger.warn(`Failed to upload ${label} image to Cloudinary:`, { error: uploadErr });
+                // Fallback to base64 for preview on error too
+                const base64 = `data:image/${img.format || 'jpeg'};base64,${img.buffer.toString('base64')}`;
+                products[productIndex][fieldName] = base64;
+                logger.warn(`Failed to upload image ${i} (${label}) to Cloudinary, using base64 fallback:`, { error: uploadErr.message });
               }
             }
           } else {
@@ -322,18 +331,32 @@ const processDocumentFile = async (filePath) => {
       // Extract images for Word documents
       if (extension === '.docx' && htmlContent && products.length > 0) {
         try {
+          logger.info(`Starting Word image extraction for ${products.length} products...`);
           const images = extractImagesFromHtml(htmlContent);
           if (images.length > 0) {
+            logger.info(`Found ${images.length} images, starting Cloudinary uploads...`);
             // Use Promise.all for parallel uploads
             await Promise.all(images.map(async (img) => {
               if (products[img.productIndex]) {
+                logger.info(`Processing image for product ${img.productIndex + 1} (${img.type})...`);
                 const imageUrl = await uploadImageToCloudinary(img.base64);
+
+                const finalUrl = imageUrl || img.base64; // Fallback to base64 for preview if upload fails
+
+                if (img.type === 'uploadFotoId') products[img.productIndex].uploadFotoId = finalUrl;
+                else if (img.type === 'uploadFotoSelfie') products[img.productIndex].uploadFotoSelfie = finalUrl;
+
                 if (imageUrl) {
-                  if (img.type === 'uploadFotoId') products[img.productIndex].uploadFotoId = imageUrl;
-                  else if (img.type === 'uploadFotoSelfie') products[img.productIndex].uploadFotoSelfie = imageUrl;
+                  logger.info(`Successfully assigned Cloudinary URL to products[${img.productIndex}].${img.type}`);
+                } else {
+                  logger.warn(`Cloudinary failed, using base64 fallback for product ${img.productIndex + 1} (${img.type})`);
                 }
+              } else {
+                logger.warn(`Product index ${img.productIndex} out of range for ${products.length} products`);
               }
             }));
+          } else {
+            logger.info('No images extracted from Word HTML');
           }
         } catch (e) {
           logger.warn('Word image extraction warning:', e.message);
@@ -425,6 +448,8 @@ const matchHeaderToField = (headerCell) => {
     { regex: /kcp|kantor\s+cabang|cabang|branch/i, field: 'kcp' },
     { regex: /pass\s+email|password\s+email/i, field: 'passEmail' },
     { regex: /email/i, field: 'email' },
+    { regex: /foto\s+ktp|identitas|upload\s+foto\s+id|upload\s*foto\s*ktp/i, field: 'uploadFotoId' },
+    { regex: /foto\s+selfie|wajah|upload\s+foto\s+selfie|upload\s*foto\s*selfie/i, field: 'uploadFotoSelfie' },
     { regex: /foto\s+ktp|upload\s+foto\s+ktp/i, field: 'uploadFotoId' },
     { regex: /foto\s+selfie|upload\s+foto\s+selfie/i, field: 'uploadFotoSelfie' },
     { regex: /^grade$|grade\s+kartu/i, field: 'grade' },

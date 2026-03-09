@@ -10,9 +10,10 @@ import {
 } from '@mui/material';
 import {
     CloudUpload, ExpandMore, CheckCircle, Error, Info, Download, Description,
-    Add as AddIcon
+    Add as AddIcon, PhotoCamera, Visibility
 } from '@mui/icons-material';
 import { useNotification } from '../contexts/NotificationContext';
+import { buildImageUrl } from '../utils/imageHelpers';
 
 const DocumentImport = ({ open, onClose, onImportSuccess }) => {
     const { showSuccess, showError, showWarning } = useNotification();
@@ -564,6 +565,8 @@ const DocumentImport = ({ open, onClose, onImportSuccess }) => {
             { id: 'pinAtm', label: 'Pin ATM' },
             { id: 'email', label: 'Email' },
             { id: 'passEmail', label: 'Password Email' },
+            { id: 'uploadFotoId', label: 'Foto KTP' },
+            { id: 'uploadFotoSelfie', label: 'Foto Selfie' },
             { id: 'status', label: 'Validasi' }
         ];
 
@@ -633,6 +636,34 @@ const DocumentImport = ({ open, onClose, onImportSuccess }) => {
                                             </TableCell>
                                         );
                                     }
+                                    if (col.id === 'uploadFotoId' || col.id === 'uploadFotoSelfie') {
+                                        const imageUrl = product[col.id];
+                                        return (
+                                            <TableCell key={col.id}>
+                                                {imageUrl ? (
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <Box
+                                                            component="img"
+                                                            src={buildImageUrl(imageUrl)}
+                                                            alt={col.label}
+                                                            sx={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 1, border: '1px solid #ddd' }}
+                                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/40?text=Error'; }}
+                                                        />
+                                                        <Tooltip title="Lihat Foto Full">
+                                                            <IconButton size="small" onClick={() => window.open(buildImageUrl(imageUrl), '_blank')}>
+                                                                <Visibility fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Box>
+                                                ) : (
+                                                    <Box sx={{ color: 'text.disabled', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                        <PhotoCamera sx={{ fontSize: 16 }} />
+                                                        <Typography variant="caption">-</Typography>
+                                                    </Box>
+                                                )}
+                                            </TableCell>
+                                        );
+                                    }
                                     return (
                                         <TableCell key={col.id}>
                                             {product[col.id] || '-'}
@@ -682,33 +713,47 @@ const DocumentImport = ({ open, onClose, onImportSuccess }) => {
                 </Box>
 
                 {validation.errors && validation.errors.length > 0 && (
-                    <Accordion>
+                    <Accordion sx={{ mt: 1, bgcolor: '#fff0f0' }}>
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                            <Typography color="error">
-                                {validation.errors.length} Data Invalid
+                            <Typography color="error" variant="subtitle2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Error fontSize="small" /> {validation.errors.length} Data Bermasalah
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             {validation.errors.map((error, index) => (
-                                <Box key={index} sx={{ mb: 2, p: 2, bgcolor: '#fff0f0', borderRadius: 1, border: '1px solid #ffcdd2' }}>
-                                    <Typography variant="body2" color="error" sx={{ fontWeight: 'bold', mb: 1 }}>
-                                        #{error.productIndex + 1}: {error.errors.join(', ')}
+                                <Box key={index} sx={{ mb: 1, p: 1, borderBottom: '1px solid #ffcdd2' }}>
+                                    <Typography variant="body2" color="error">
+                                        Baris #{error.productIndex + 1}: {error.errors.join(', ')}
                                     </Typography>
-
-                                    {/* Debug View for User */}
-                                    <details style={{ cursor: 'pointer', fontSize: '0.875rem', color: '#555' }}>
-                                        <summary>Lihat Data Terbaca (Debug)</summary>
-                                        <Box sx={{ mt: 1, p: 1, bgcolor: '#fff', borderRadius: 1, border: '1px solid #eee', overflowX: 'auto' }}>
-                                            <pre style={{ margin: 0, fontSize: '0.75rem' }}>
-                                                {JSON.stringify(error.data, null, 2)}
-                                            </pre>
-                                        </Box>
-                                    </details>
                                 </Box>
                             ))}
                         </AccordionDetails>
                     </Accordion>
                 )}
+
+                {/* Always show Debug View for Inspection */}
+                <Accordion sx={{ mt: 1 }}>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                        <Typography variant="subtitle2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Info fontSize="small" /> Debug: Lihat JSON Data Terbaca
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography variant="caption" component="pre" sx={{
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-all',
+                            bgcolor: '#f5f5f5',
+                            p: 1.5,
+                            borderRadius: 1,
+                            display: 'block',
+                            maxHeight: 300,
+                            overflow: 'auto',
+                            fontFamily: 'monospace'
+                        }}>
+                            {JSON.stringify(previewData.extractedData, null, 2)}
+                        </Typography>
+                    </AccordionDetails>
+                </Accordion>
             </Box>
         );
     };

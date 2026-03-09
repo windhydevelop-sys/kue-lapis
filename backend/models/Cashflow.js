@@ -16,7 +16,7 @@ const cashflowSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  
+
   // Enhanced Journal Fields
   debit: {
     type: Number,
@@ -69,6 +69,23 @@ const cashflowSchema = new mongoose.Schema({
     enum: ['cash', 'transfer', 'credit_card', 'debit_card', 'other'],
     default: 'cash'
   },
+  account: {
+    type: String,
+    enum: ['Rekening A', 'Rekening B'],
+    default: 'Rekening A'
+  },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
+  },
+  noOrder: {
+    type: String,
+    trim: true
+  },
+  isDebt: {
+    type: Boolean,
+    default: false
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -83,7 +100,7 @@ const cashflowSchema = new mongoose.Schema({
 });
 
 // Set debit/credit based on type for proper double-entry accounting
-cashflowSchema.pre('save', function(next) {
+cashflowSchema.pre('save', function (next) {
   // Set debit/credit based on type if not explicitly set
   if (this.type === 'income' && this.debit === 0 && this.credit === 0) {
     // Pemasukan: Kas bertambah (Debit), Pendapatan bertambah (Credit)
@@ -127,7 +144,7 @@ cashflowSchema.index({ debit: 1 });
 cashflowSchema.index({ credit: 1 });
 
 // Virtual for formatted amount
-cashflowSchema.virtual('formattedAmount').get(function() {
+cashflowSchema.virtual('formattedAmount').get(function () {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -135,7 +152,7 @@ cashflowSchema.virtual('formattedAmount').get(function() {
 });
 
 // Virtual for formatted debit
-cashflowSchema.virtual('formattedDebit').get(function() {
+cashflowSchema.virtual('formattedDebit').get(function () {
   return this.debit > 0 ? new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -143,7 +160,7 @@ cashflowSchema.virtual('formattedDebit').get(function() {
 });
 
 // Virtual for formatted credit
-cashflowSchema.virtual('formattedCredit').get(function() {
+cashflowSchema.virtual('formattedCredit').get(function () {
   return this.credit > 0 ? new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -151,12 +168,12 @@ cashflowSchema.virtual('formattedCredit').get(function() {
 });
 
 // Virtual for net balance (debit - credit)
-cashflowSchema.virtual('netBalance').get(function() {
+cashflowSchema.virtual('netBalance').get(function () {
   return this.debit - this.credit;
 });
 
 // Virtual for formatted net balance
-cashflowSchema.virtual('formattedNetBalance').get(function() {
+cashflowSchema.virtual('formattedNetBalance').get(function () {
   const balance = this.netBalance;
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

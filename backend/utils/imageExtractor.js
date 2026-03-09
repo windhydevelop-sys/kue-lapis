@@ -20,18 +20,37 @@ const extractImagesFromHtml = (html) => {
 
     // Iterate over all elements in body
     // Mammoth usually outputs <p>, <table>, <img>, etc.
-    $('body').children().each((i, elem) => {
-        const text = $(elem).text().trim();
-        const $img = $(elem).find('img');
-        const hasImg = $img.length > 0;
+    $('body').find('*').each((i, elem) => {
+        // We only care about elements that directly contain text or are images
+        const $elem = $(elem);
+        const text = $elem.text().trim();
+        const isImage = elem.name === 'img';
 
         // 1. Detect Product Boundary
-        if (text.match(/No\s*\.?\s*ORDER/i)) {
-            currentProductIndex++;
-            expecting = null;
-            foundKTP = false;
-            foundSelfie = false;
-            // logger.info(`ImageExtractor: Found product boundary ${currentProductIndex}`);
+        // Patterns: "No. ORDER", "NIK", or "PRODUCT 1" (from corrected docs)
+        const boundaryMatch = text.match(/No\s*\.?\s*ORDER|NIK|PRODUCT\s+\d+/i);
+        if (boundaryMatch) {
+            const ownText = $elem.clone().children().remove().end().text().trim();
+            if (ownText.match(/No\s*\.?\s*ORDER|NIK|PRODUCT\s+\d+/i)) {
+
+                // CRITICAL FIX: Only increment if this is a NEW product block.
+                // If we see "No. ORDER", it's definitely a new product.
+                // If we see "NIK" or others, it might be the same product we just saw "No. ORDER" for.
+                const isPrimaryMarker = ownText.match(/No\s*\.?\s*ORDER|PRODUCT\s+\d+/i);
+
+                // If it's a primary marker, ALWAYS increment.
+                // If it's a secondary marker (NIK), only increment if we haven't found a marker for this index yet.
+                if (isPrimaryMarker || currentProductIndex === -1) {
+                    currentProductIndex++;
+                    expecting = null;
+                    foundKTP = false;
+                    foundSelfie = false;
+                    logger.info(`ImageExtractor: Found NEW product boundary ${currentProductIndex} at "${ownText}"`);
+                } else {
+                    // It's a secondary marker like "NIK" for the CURRENT product
+                    // logger.info(`ImageExtractor: Found secondary marker "${ownText}" for product ${currentProductIndex}`);
+                }
+            }
         }
 
         if (currentProductIndex < 0) return; // Skip content before first product
@@ -40,16 +59,18 @@ const extractImagesFromHtml = (html) => {
         // Checks for "Foto KTP", "KTP", "Identitas", "ID Card", etc.
         if (text.match(/(?:Foto\s*)?KTP|Identitas|ID\s*Card/i)) {
             expecting = 'uploadFotoId';
+            // logger.info(`ImageExtractor: Expecting KTP for product ${currentProductIndex}`);
         }
         // Checks for "Foto Selfie", "Selfie", "Wajah", "Face", etc.
         else if (text.match(/(?:Foto\s*)?Selfie|Wajah|Face/i)) {
             expecting = 'uploadFotoSelfie';
+            // logger.info(`ImageExtractor: Expecting Selfie for product ${currentProductIndex}`);
         }
 
         // 3. Capture Image
-        if (hasImg) {
+        if (isImage) {
             // Mammoth embeds default as base64 in src
-            const src = $img.attr('src');
+            const src = $elem.attr('src');
 
             if (src && src.startsWith('data:image')) {
                 let targetType = null;
@@ -67,14 +88,21 @@ const extractImagesFromHtml = (html) => {
                 }
 
                 if (targetType) {
-                    images.push({
-                        productIndex: currentProductIndex,
-                        type: targetType,
-                        base64: src
-                    });
+                    // Check if we already have this type for this product to avoid duplicates
+                    const exists = images.find(img => img.productIndex === currentProductIndex && img.type === targetType);
 
-                    if (targetType === 'uploadFotoId') foundKTP = true;
-                    if (targetType === 'uploadFotoSelfie') foundSelfie = true;
+                    if (!exists) {
+                        images.push({
+                            productIndex: currentProductIndex,
+                            type: targetType,
+                            base64: src
+                        });
+
+                        if (targetType === 'uploadFotoId') foundKTP = true;
+                        if (targetType === 'uploadFotoSelfie') foundSelfie = true;
+
+                        logger.info(`ImageExtractor: Assigned image to product ${currentProductIndex} as ${targetType} (Total Found: ${images.length})`);
+                    }
 
                     // Reset expectation after finding image
                     expecting = null;
@@ -96,6 +124,7 @@ const uploadImageToCloudinary = async (base64Str) => {
         if (result.success) {
             return result.url;
         }
+        logger.warn('imageExtractor: uploadBase64Image failed:', { error: result.error });
         return null;
     } catch (err) {
         logger.error('Failed to upload extracted image to Cloudinary', { error: err.message });

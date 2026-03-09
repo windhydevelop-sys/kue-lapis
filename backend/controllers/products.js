@@ -199,6 +199,10 @@ const createProduct = async (req, res) => {
       handphoneId: product.handphoneId
     }, req);
 
+    // SYNC WITH CASHFLOW
+    const { syncProductWithCashflow } = require('../utils/cashflowHelper');
+    await syncProductWithCashflow(product, req.userId);
+
     // Return decrypted product with populated phone
     const populatedProduct = await Product.findById(product._id).populate('handphoneId', 'merek tipe imei');
     res.status(201).json({
@@ -220,7 +224,7 @@ const createProduct = async (req, res) => {
 // Get all products with decryption, pagination, and phone population
 const getProducts = async (req, res) => {
   try {
-    const { page = 1, limit = 50, search = '', status, bank, codeAgen } = req.query;
+    const { page = 1, limit = 50, search = '', status, bank, codeAgen, paymentStatus, hasPrice } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     // Build filter query
@@ -235,6 +239,8 @@ const getProducts = async (req, res) => {
     if (status) query.status = status;
     if (bank) query.bank = bank;
     if (codeAgen) query.codeAgen = codeAgen;
+    if (paymentStatus) query.paymentStatus = paymentStatus;
+    if (hasPrice === 'true') query.harga = { $gt: 0 };
 
     // Fetch total count for pagination
     const total = await Product.countDocuments(query);
@@ -548,6 +554,10 @@ const updateProduct = async (req, res) => {
         sendComplaintNotification(notificationProduct, isNewComplaint ? 'new' : 'update');
       }
     }
+
+    // SYNC WITH CASHFLOW
+    const { syncProductWithCashflow } = require('../utils/cashflowHelper');
+    await syncProductWithCashflow(product, req.userId);
 
     // Return with populated phone
     const populatedProduct = await Product.findById(product._id).populate('handphoneId', 'merek tipe imei spesifikasi');

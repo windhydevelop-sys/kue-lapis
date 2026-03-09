@@ -24,153 +24,204 @@ import ProductDetailDrawer from './ProductDetailDrawer';
 import FloatingNIKSearchBar from './FloatingNIKSearchBar';
 import DocumentImport from './DocumentImport';
 import { buildImageUrl } from '../utils/imageHelpers';
+import { formatCurrency, cleanCurrency } from '../utils/formatHelpers';
 
 // Create styles for the PDF document
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'column',
+    padding: 30,
     backgroundColor: '#ffffff',
-    padding: 15,
-    size: 'A5',
+    fontFamily: 'Helvetica',
   },
-  section: {
-    margin: 5,
-    padding: 5,
-    flexGrow: 1,
-  },
-  header: {
-    fontSize: 18,
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#333333',
-  },
-  subHeader: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: '#555555',
-  },
-  text: {
-    fontSize: 10,
-    marginBottom: 3,
-  },
-  row: {
+  headerContainer: {
     flexDirection: 'row',
-    marginBottom: 3,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#1a237e',
+    paddingBottom: 10,
   },
-  label: {
-    width: 80,
+  companyInfo: {
+    flexDirection: 'column',
+  },
+  companyName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1a237e',
+  },
+  invoiceTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#e0e0e0',
+  },
+  infoSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  infoBox: {
+    width: '45%',
+  },
+  infoTitle: {
     fontSize: 10,
     fontWeight: 'bold',
+    color: '#1a237e',
+    marginBottom: 5,
+    textTransform: 'uppercase',
   },
-  value: {
-    flex: 1,
+  infoText: {
     fontSize: 10,
-  },
-  productImage: {
-    width: '100%',
-    height: 'auto',
-    marginBottom: 10,
-  },
-  footer: {
-    fontSize: 8,
-    textAlign: 'center',
-    marginTop: 10,
-    color: '#777777',
+    marginBottom: 3,
+    color: '#333',
   },
   table: {
     display: "table",
     width: "auto",
+    marginTop: 10,
     borderStyle: "solid",
     borderWidth: 1,
-    borderColor: '#bfbfbf',
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
+    borderColor: '#e0e0e0',
   },
   tableRow: {
-    margin: "auto",
-    flexDirection: "row"
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    minHeight: 25,
+    alignItems: 'center',
   },
-  tableColHeader: {
-    width: "16.66%",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: '#bfbfbf',
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    backgroundColor: '#f0f0f0',
-    padding: 3,
-    fontSize: 8,
+  tableHeader: {
+    backgroundColor: '#1a237e',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
-  tableCol: {
-    width: "16.66%",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: '#bfbfbf',
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-    padding: 3,
-    fontSize: 8,
+  tableColLabel: {
+    width: "30%",
+    padding: 5,
+    fontSize: 9,
+    fontWeight: 'bold',
+    backgroundColor: '#f5f5f5',
+    borderRightWidth: 1,
+    borderRightColor: '#e0e0e0',
   },
+  tableColValue: {
+    width: "70%",
+    padding: 5,
+    fontSize: 9,
+  },
+  summarySection: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  summaryBox: {
+    width: '40%',
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    borderRadius: 5,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  totalLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1a237e',
+  },
+  totalValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#d32f2f',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    left: 30,
+    right: 30,
+    textAlign: 'center',
+    fontSize: 9,
+    color: '#999',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingTop: 10,
+  }
 });
-
 
 const InvoicePdfDocument = ({ product }) => (
   <Document>
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>INVOICE</Text>
-
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Detail Invoice</Text>
-        <View style={styles.row}>
-          <Text style={styles.label}>No. Invoice:</Text>
-          <Text style={styles.value}>{product.noOrder || '-'}</Text>
+    <Page size="A5" style={styles.page} orientation="portrait">
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <View style={styles.companyInfo}>
+          <Text style={styles.companyName}>KUE LAPIS</Text>
+          <Text style={{ fontSize: 9, color: '#666' }}>Sistem Manajemen Aset & Pembayaran</Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Tanggal:</Text>
-          <Text style={styles.value}>{new Date().toLocaleDateString('id-ID')}</Text>
+        <Text style={styles.invoiceTitle}>INVOICE</Text>
+      </View>
+
+      {/* Basic Info */}
+      <View style={styles.infoSection}>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Detail Order</Text>
+          <Text style={styles.infoText}>No. Order: {product.noOrder || '-'}</Text>
+          <Text style={styles.infoText}>Tanggal: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+          <Text style={styles.infoText}>Petugas (Orlap): {product.codeAgen || '-'}</Text>
+        </View>
+        <View style={styles.infoBox}>
+          <Text style={styles.infoTitle}>Pelanggan</Text>
+          <Text style={styles.infoText}>Nama: {product.customer || '-'}</Text>
+          <Text style={styles.infoText}>NIK: {product.nik || '-'}</Text>
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Ditagihkan Kepada</Text>
-        <View style={styles.row}>
-          <Text style={styles.label}>Nama Pelanggan:</Text>
-          <Text style={styles.value}>{product.customer || '-'}</Text>
+      {/* Details Table */}
+      <Text style={styles.infoTitle}>Detail Perangkat & Rekening</Text>
+      <View style={styles.table}>
+        <View style={styles.tableRow}>
+          <Text style={styles.tableColLabel}>Merek / Tipe</Text>
+          <Text style={styles.tableColValue}>{product.handphone || '-'} / {product.tipeHandphone || '-'}</Text>
+        </View>
+        <View style={styles.tableRow}>
+          <Text style={styles.tableColLabel}>IMEI</Text>
+          <Text style={styles.tableColValue}>{product.imeiHandphone || '-'}</Text>
+        </View>
+        <View style={styles.tableRow}>
+          <Text style={styles.tableColLabel}>Bank</Text>
+          <Text style={styles.tableColValue}>{product.bank || '-'}</Text>
+        </View>
+        <View style={styles.tableRow}>
+          <Text style={styles.tableColLabel}>No. Rekening</Text>
+          <Text style={styles.tableColValue}>{product.noRek || '-'}</Text>
+        </View>
+        <View style={styles.tableRow}>
+          <Text style={styles.tableColLabel}>Nama Rekening</Text>
+          <Text style={styles.tableColValue}>{product.nama || '-'}</Text>
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Detail Produk</Text>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableColHeader}>Merek</Text>
-            <Text style={styles.tableColHeader}>Tipe</Text>
-            <Text style={styles.tableColHeader}>IMEI</Text>
-            <Text style={styles.tableColHeader}>Spesifikasi</Text>
-            <Text style={styles.tableColHeader}>Kepemilikan</Text>
-            <Text style={styles.tableColHeader}>Harga</Text>
+      {/* Summary */}
+      <View style={styles.summarySection}>
+        <View style={styles.summaryBox}>
+          <View style={styles.summaryRow}>
+            <Text style={{ fontSize: 9 }}>Status:</Text>
+            <Text style={{ fontSize: 9, fontWeight: 'bold', color: product.paymentStatus === 'paid' ? '#2e7d32' : '#d32f2f' }}>
+              {product.paymentStatus === 'paid' ? 'LUNAS' : 'BELUM BAYAR'}
+            </Text>
           </View>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableCol}>{product.handphone || '-'}</Text>
-            <Text style={styles.tableCol}>{product.tipeHandphone || '-'}</Text>
-            <Text style={styles.tableCol}>{product.imeiHandphone || '-'}</Text>
-            <Text style={styles.tableCol}>{product.spesifikasi || '-'}</Text>
-            <Text style={styles.tableCol}>{product.kepemilikan || '-'}</Text>
-            <Text style={styles.tableCol}>Rp {product.harga ? product.harga.toLocaleString('id-ID') : '-'}</Text>
+          <View style={[styles.summaryRow, { marginTop: 5, borderTopWidth: 1, borderTopColor: '#e0e0e0', paddingTop: 5 }]}>
+            <Text style={styles.totalLabel}>TOTAL</Text>
+            <Text style={styles.totalValue}>Rp {product.harga ? product.harga.toLocaleString('id-ID') : '0'}</Text>
           </View>
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.subHeader}>Total Pembayaran</Text>
-        <View style={styles.row}>
-          <Text style={styles.label}>Total:</Text>
-          <Text style={styles.value}>Rp {product.harga ? product.harga.toLocaleString('id-ID') : '-'}</Text>
-        </View>
-      </View>
-
-      <Text style={styles.footer}>Terima kasih atas kepercayaan Anda!</Text>
+      {/* Footer */}
+      <Text style={styles.footer}>
+        Invoice ini dihasilkan secara otomatis oleh Sistem KUE LAPIS.{"\n"}
+        Terima kasih atas kepercayaannya!
+      </Text>
     </Page>
   </Document>
 );
@@ -573,6 +624,8 @@ const initialFormState = {
   email: '',
   passEmail: '',
   status: 'pending',
+  harga: 0,
+  paymentStatus: 'unpaid',
   complaint: '',
   complaintDate: '',
   complaintResolvedDate: '',
@@ -637,6 +690,11 @@ const Dashboard = ({ setToken }) => {
     // Apply formatting for card-like inputs
     if (name === 'nik' || name === 'noAtm') {
       formattedValue = formatCardNumber(value);
+    }
+
+    // Format currency for "harga"
+    if (name === 'harga') {
+      formattedValue = formatCurrency(value);
     }
 
     // Special handling for date fields to ensure proper state updates
@@ -896,6 +954,8 @@ const Dashboard = ({ setToken }) => {
         email: product.email || '',
         passEmail: product.passEmail || '',
         status: product.status || 'pending',
+        harga: product.harga || 0,
+        paymentStatus: product.paymentStatus || 'unpaid',
       });
       setImeiError(validateIMEI(product.imeiHandphone || '', products, product._id));
 
@@ -945,8 +1005,8 @@ const Dashboard = ({ setToken }) => {
         }
 
         // Clean formatted card/number inputs for backend
-        if ((key === 'nik' || key === 'noAtm' || key === 'noRek' || key === 'noHp') && typeof value === 'string') {
-          value = cleanCardNumber(value);
+        if ((key === 'nik' || key === 'noAtm' || key === 'noRek' || key === 'noHp' || key === 'harga') && typeof value === 'string') {
+          value = key === 'harga' ? cleanCurrency(value) : cleanCardNumber(value);
         }
 
         // Map frontend field names to backend field names
@@ -1468,7 +1528,7 @@ const Dashboard = ({ setToken }) => {
               >
                 Export PDF
               </Button>
-              {selectedProductForInvoice && selectedProductForInvoice.status === 'completed' && (
+              {selectedProductForInvoice && (selectedProductForInvoice.status === 'completed' || selectedProductForInvoice.paymentStatus === 'paid') && (
                 <Button
                   variant="contained"
                   color="success"
@@ -1901,6 +1961,38 @@ const Dashboard = ({ setToken }) => {
                   <MenuItem value="completed">Selesai</MenuItem>
                   <MenuItem value="cancelled">Dibatalkan</MenuItem>
                 </TextField>
+
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Harga Jual"
+                      name="harga"
+                      type="text"
+                      value={form.harga || ''}
+                      onChange={handleChange}
+                      margin="normal"
+                      placeholder="0"
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Status Pembayaran"
+                      name="paymentStatus"
+                      value={form.paymentStatus || 'unpaid'}
+                      onChange={handleChange}
+                      margin="normal"
+                    >
+                      <MenuItem value="unpaid">Belum Bayar (Piutang)</MenuItem>
+                      <MenuItem value="paid">Sudah Bayar (Lunas)</MenuItem>
+                    </TextField>
+                  </Grid>
+                </Grid>
 
                 <Box sx={{ mt: 3, p: 2, border: '1px dashed rgba(0,0,0,0.2)', borderRadius: 2 }}>
                   <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>Detail Komplain (Opsional)</Typography>

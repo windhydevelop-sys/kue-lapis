@@ -49,6 +49,11 @@ const balanceTransactionSchema = new mongoose.Schema({
     enum: ['cash', 'transfer', 'credit_card', 'debit_card', 'other'],
     default: 'cash'
   },
+  account: {
+    type: String,
+    enum: ['Rekening A', 'Rekening B'],
+    default: 'Rekening A'
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -63,7 +68,7 @@ const balanceTransactionSchema = new mongoose.Schema({
 });
 
 // Pre-save middleware to auto-assign debit/credit and calculate running balance
-balanceTransactionSchema.pre('save', async function(next) {
+balanceTransactionSchema.pre('save', async function (next) {
   // Auto-assign debit/credit based on type
   if (this.type === 'income') {
     // Pemasukan: Debit (menambah saldo)
@@ -76,10 +81,11 @@ balanceTransactionSchema.pre('save', async function(next) {
   }
 
   // Calculate running balance
-  // Find the last transaction before this one
+  // Find the last transaction before this one FOR THE SAME ACCOUNT
   const lastTransaction = await mongoose.model('BalanceTransaction')
     .findOne({
       createdBy: this.createdBy,
+      account: this.account, // Filter by account
       date: { $lte: this.date },
       _id: { $ne: this._id }
     })
@@ -97,11 +103,12 @@ balanceTransactionSchema.index({ type: 1 });
 balanceTransactionSchema.index({ category: 1 });
 balanceTransactionSchema.index({ date: -1 });
 balanceTransactionSchema.index({ createdBy: 1 });
+balanceTransactionSchema.index({ account: 1 }); // Index for account
 balanceTransactionSchema.index({ createdAt: -1 });
 balanceTransactionSchema.index({ runningBalance: 1 });
 
 // Virtual for formatted amount
-balanceTransactionSchema.virtual('formattedAmount').get(function() {
+balanceTransactionSchema.virtual('formattedAmount').get(function () {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -109,7 +116,7 @@ balanceTransactionSchema.virtual('formattedAmount').get(function() {
 });
 
 // Virtual for formatted debit
-balanceTransactionSchema.virtual('formattedDebit').get(function() {
+balanceTransactionSchema.virtual('formattedDebit').get(function () {
   return this.debit > 0 ? new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -117,7 +124,7 @@ balanceTransactionSchema.virtual('formattedDebit').get(function() {
 });
 
 // Virtual for formatted credit
-balanceTransactionSchema.virtual('formattedCredit').get(function() {
+balanceTransactionSchema.virtual('formattedCredit').get(function () {
   return this.credit > 0 ? new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -125,7 +132,7 @@ balanceTransactionSchema.virtual('formattedCredit').get(function() {
 });
 
 // Virtual for formatted running balance
-balanceTransactionSchema.virtual('formattedRunningBalance').get(function() {
+balanceTransactionSchema.virtual('formattedRunningBalance').get(function () {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR'
@@ -133,7 +140,7 @@ balanceTransactionSchema.virtual('formattedRunningBalance').get(function() {
 });
 
 // Virtual for balance status (positive/negative)
-balanceTransactionSchema.virtual('balanceStatus').get(function() {
+balanceTransactionSchema.virtual('balanceStatus').get(function () {
   return this.runningBalance >= 0 ? 'positive' : 'negative';
 });
 
