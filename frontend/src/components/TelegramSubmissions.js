@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import {
     CloudDownload, CloudUpload, Warning,
-    CheckCircle, Refresh, Delete
+    CheckCircle, Refresh, Delete, Telegram
 } from '@mui/icons-material';
 import { useNotification } from '../contexts/NotificationContext';
 import { useThemeMode } from '../contexts/ThemeModeContext';
@@ -170,6 +170,22 @@ const TelegramSubmissions = () => {
         }
     };
 
+    const handleSyncBot = async (type) => {
+        try {
+            const endpoint = type === 'primary' ? '/api/telegram/set-webhook' : '/api/telegram-word/set-webhook';
+            const appUrl = window.location.origin; // Dynamically get the base URL
+
+            const response = await axios.get(`${endpoint}?url=${appUrl}`);
+
+            if (response.data.success || response.status === 200) {
+                showSuccess(`Berhasil sinkronisasi ${type === 'primary' ? 'Bot Utama' : 'Bot Word'}`);
+            }
+        } catch (error) {
+            console.error('Sync error:', error);
+            showError(`Gagal sinkronisasi bot: ${error.response?.data?.message || error.message}`);
+        }
+    };
+
     const isMissingData = (product) => {
         return !product.noOrder;
     };
@@ -215,6 +231,22 @@ const TelegramSubmissions = () => {
                         >
                             {isImporting ? <CircularProgress size={24} /> : 'Import Corrected'}
                             <input type="file" hidden accept=".docx" onChange={handleImportWord} />
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<Telegram />}
+                            onClick={() => handleSyncBot('primary')}
+                            sx={{ bgcolor: '#0088cc', '&:hover': { bgcolor: '#0077b5' } }}
+                        >
+                            Sync Bot Utama
+                        </Button>
+                        <Button
+                            variant="contained"
+                            startIcon={<Telegram />}
+                            onClick={() => handleSyncBot('word')}
+                            sx={{ bgcolor: '#222', '&:hover': { bgcolor: '#333' } }}
+                        >
+                            Sync Bot Word
                         </Button>
                     </Box>
                 </Box>
