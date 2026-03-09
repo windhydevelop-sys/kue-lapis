@@ -29,6 +29,8 @@ const TelegramSubmissions = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [statusFilter, setStatusFilter] = useState('pending');
+    const [primarySyncStatus, setPrimarySyncStatus] = useState('idle'); // idle, loading, success
+    const [wordSyncStatus, setWordSyncStatus] = useState('idle'); // idle, loading, success
 
     const fetchSubmissions = useCallback(async () => {
         setLoading(true);
@@ -171,7 +173,9 @@ const TelegramSubmissions = () => {
     };
 
     const handleSyncBot = async (type) => {
+        const setStatus = type === 'primary' ? setPrimarySyncStatus : setWordSyncStatus;
         try {
+            setStatus('loading');
             const endpoint = type === 'primary' ? '/api/telegram/set-webhook' : '/api/telegram-word/set-webhook';
 
             // CRITICAL: Webhook needs the BACKEND URL, not the frontend (Vercel) URL.
@@ -182,10 +186,14 @@ const TelegramSubmissions = () => {
 
             if (response.data.success || response.status === 200) {
                 showSuccess(`Berhasil sinkronisasi ${type === 'primary' ? 'Bot Utama' : 'Bot Word'}`);
+                setStatus('success');
+            } else {
+                setStatus('idle');
             }
         } catch (error) {
             console.error('Sync error:', error);
             showError(`Gagal sinkronisasi bot: ${error.response?.data?.message || error.message}`);
+            setStatus('idle');
         }
     };
 
@@ -237,19 +245,29 @@ const TelegramSubmissions = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            startIcon={<Telegram />}
+                            startIcon={primarySyncStatus === 'success' ? <CheckCircle /> : <Telegram />}
                             onClick={() => handleSyncBot('primary')}
-                            sx={{ bgcolor: '#0088cc', '&:hover': { bgcolor: '#0077b5' } }}
+                            disabled={primarySyncStatus !== 'idle'}
+                            sx={{
+                                bgcolor: primarySyncStatus === 'success' ? 'success.main' : '#0088cc',
+                                '&:hover': { bgcolor: primarySyncStatus === 'success' ? 'success.dark' : '#0077b5' }
+                            }}
                         >
-                            Sync Bot Utama
+                            {primarySyncStatus === 'loading' ? <CircularProgress size={20} color="inherit" /> :
+                                primarySyncStatus === 'success' ? 'Sudah Sinkron (Utama)' : 'Sync Bot Utama'}
                         </Button>
                         <Button
                             variant="contained"
-                            startIcon={<Telegram />}
+                            startIcon={wordSyncStatus === 'success' ? <CheckCircle /> : <Telegram />}
                             onClick={() => handleSyncBot('word')}
-                            sx={{ bgcolor: '#222', '&:hover': { bgcolor: '#333' } }}
+                            disabled={wordSyncStatus !== 'idle'}
+                            sx={{
+                                bgcolor: wordSyncStatus === 'success' ? 'success.main' : '#222',
+                                '&:hover': { bgcolor: wordSyncStatus === 'success' ? 'success.dark' : '#333' }
+                            }}
                         >
-                            Sync Bot Word
+                            {wordSyncStatus === 'loading' ? <CircularProgress size={20} color="inherit" /> :
+                                wordSyncStatus === 'success' ? 'Sudah Sinkron (Word)' : 'Sync Bot Word'}
                         </Button>
                     </Box>
                 </Box>
