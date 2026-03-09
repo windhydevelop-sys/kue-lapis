@@ -173,9 +173,12 @@ const TelegramSubmissions = () => {
     const handleSyncBot = async (type) => {
         try {
             const endpoint = type === 'primary' ? '/api/telegram/set-webhook' : '/api/telegram-word/set-webhook';
-            const appUrl = window.location.origin; // Dynamically get the base URL
 
-            const response = await axios.get(`${endpoint}?url=${appUrl}`);
+            // CRITICAL: Webhook needs the BACKEND URL, not the frontend (Vercel) URL.
+            // We use the baseURL from axios which is configured in utils/axios.js
+            const backendUrl = axios.defaults.baseURL;
+
+            const response = await axios.get(`${endpoint}?url=${backendUrl}`);
 
             if (response.data.success || response.status === 200) {
                 showSuccess(`Berhasil sinkronisasi ${type === 'primary' ? 'Bot Utama' : 'Bot Word'}`);

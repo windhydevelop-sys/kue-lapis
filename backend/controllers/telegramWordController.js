@@ -231,7 +231,12 @@ const setWebhook = async (req, res) => {
     const url = req.query.url || req.body.url;
     if (!url) return res.status(400).json({ message: 'URL required' });
     try {
-        if (!bot) throw new Error('Bot token missing');
+        if (!bot) {
+            return res.status(400).json({
+                message: 'Bot Word belum terkonfigurasi di server (Token Kosong).',
+                hint: 'Pastikan TELEGRAM_WORD_BOT_TOKEN sudah diatur di environment variables.'
+            });
+        }
         await bot.setWebHook(`${url}/api/telegram-word/webhook`);
         res.status(200).json({ message: 'Webhook for Word Bot set!' });
     } catch (err) {

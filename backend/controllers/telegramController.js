@@ -22,6 +22,12 @@ const setWebhook = async (req, res) => {
   }
 
   try {
+    if (!bot) {
+      return res.status(400).json({
+        message: 'Bot Utama belum terkonfigurasi di server (Token Kosong).',
+        hint: 'Pastikan TELEGRAM_BOT_TOKEN sudah diatur di environment variables.'
+      });
+    }
     await bot.setWebHook(`${webhookUrl}/api/telegram/webhook`);
     res.status(200).json({ message: 'Webhook Telegram berhasil diatur.' });
   } catch (error) {
