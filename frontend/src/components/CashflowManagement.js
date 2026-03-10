@@ -438,7 +438,7 @@ const CashflowManagement = () => {
             <Card sx={{ background: 'linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)', color: 'white', borderRadius: 3, boxShadow: 3 }}>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingUp sx={{ fontSize: 40, mb: 1 }} />
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Rp {summary.totalDebit?.toLocaleString('id-ID') || '0'}</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Rp {summary.totalIncome?.toLocaleString('id-ID') || '0'}</Typography>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>Total Pemasukan</Typography>
               </CardContent>
             </Card>
@@ -447,7 +447,7 @@ const CashflowManagement = () => {
             <Card sx={{ background: 'linear-gradient(135deg, #f44336 0%, #e57373 100%)', color: 'white', borderRadius: 3, boxShadow: 3 }}>
               <CardContent sx={{ textAlign: 'center' }}>
                 <TrendingDown sx={{ fontSize: 40, mb: 1 }} />
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Rp {summary.totalCredit?.toLocaleString('id-ID') || '0'}</Typography>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Rp {summary.totalExpense?.toLocaleString('id-ID') || '0'}</Typography>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>Total Pengeluaran</Typography>
               </CardContent>
             </Card>

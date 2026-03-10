@@ -215,12 +215,15 @@ router.delete('/:id', auth, async (req, res) => {
 // Get cashflow summary
 router.get('/summary/overview', auth, async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, account } = req.query;
     let dateFilter = {};
     if (startDate || endDate) {
       dateFilter.date = {};
       if (startDate) dateFilter.date.$gte = new Date(startDate);
       if (endDate) dateFilter.date.$lte = new Date(endDate);
+    }
+    if (account) {
+      dateFilter.account = account;
     }
 
     const incomeResult = await Cashflow.aggregate([
@@ -247,12 +250,15 @@ router.get('/summary/overview', auth, async (req, res) => {
 // Enhanced summary with debit/credit totals
 router.get('/summary/debit-credit', auth, async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, account } = req.query;
     let dateFilter = {};
     if (startDate || endDate) {
       dateFilter.date = {};
       if (startDate) dateFilter.date.$gte = new Date(startDate);
       if (endDate) dateFilter.date.$lte = new Date(endDate);
+    }
+    if (account) {
+      dateFilter.account = account;
     }
 
     const totals = await Cashflow.aggregate([

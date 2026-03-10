@@ -103,12 +103,12 @@ const cashflowSchema = new mongoose.Schema({
 cashflowSchema.pre('save', function (next) {
   // Set debit/credit based on type if not explicitly set
   if (this.type === 'income' && this.debit === 0 && this.credit === 0) {
-    // Pemasukan: Kas bertambah (Debit), Pendapatan bertambah (Credit)
+    // Pemasukan: Kas bertambah (Debit)
     this.debit = this.amount;
-    this.credit = this.amount;
+    this.credit = 0;
   } else if (this.type === 'expense' && this.debit === 0 && this.credit === 0) {
-    // Pengeluaran: Beban bertambah (Debit), Kas berkurang (Credit)
-    this.debit = this.amount;
+    // Pengeluaran: Kas berkurang (Credit)
+    this.debit = 0;
     this.credit = this.amount;
   }
 
