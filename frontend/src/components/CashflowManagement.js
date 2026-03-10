@@ -35,7 +35,7 @@ const CashflowManagement = () => {
     'Rekening A': { name: '-', bank: '-', number: '-', initialBalance: 0 },
     'Rekening B': { name: '-', bank: '-', number: '-', initialBalance: 0 }
   });
-  const [selectedAccountTab, setSelectedAccountTab] = useState('ALL');
+  const [selectedAccountTab, setSelectedAccountTab] = useState('Rekening A');
 
   // Dialog states
   const [openDialog, setOpenDialog] = useState(false);
@@ -97,7 +97,7 @@ const CashflowManagement = () => {
 
   const fetchCashflows = useCallback(async () => {
     try {
-      const params = selectedAccountTab !== 'ALL' ? { account: selectedAccountTab } : {};
+      const params = { account: selectedAccountTab };
       const response = await axios.get('/api/cashflow', { params });
       setCashflows(response.data.data);
     } catch (err) {
@@ -108,7 +108,7 @@ const CashflowManagement = () => {
 
   const fetchSummary = useCallback(async () => {
     try {
-      const params = selectedAccountTab !== 'ALL' ? { account: selectedAccountTab } : {};
+      const params = { account: selectedAccountTab };
       const [overviewResponse, debitCreditResponse] = await Promise.all([
         axios.get('/api/cashflow/summary/overview', { params }),
         axios.get('/api/cashflow/summary/debit-credit', { params })
@@ -123,9 +123,7 @@ const CashflowManagement = () => {
         totalCredit: debitCreditData.totalCredit,
         balance: debitCreditData.balance,
         isBalanced: debitCreditData.isBalanced,
-        initialBalanceSum: selectedAccountTab === 'ALL'
-          ? (accountDetails['Rekening A'].initialBalance + accountDetails['Rekening B'].initialBalance)
-          : accountDetails[selectedAccountTab].initialBalance
+        initialBalanceSum: accountDetails[selectedAccountTab].initialBalance
       });
     } catch (err) {
       console.error('Error fetching summary:', err);
@@ -354,7 +352,6 @@ const CashflowManagement = () => {
         {/* Account Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs value={selectedAccountTab} onChange={handleTabChange} aria-label="account records tabs">
-            <Tab label="Semua Rekening" value="ALL" sx={{ fontWeight: 'bold' }} />
             <Tab label="Rekening A" value="Rekening A" sx={{ fontWeight: 'bold' }} />
             <Tab label="Rekening B" value="Rekening B" sx={{ fontWeight: 'bold' }} />
           </Tabs>
@@ -363,9 +360,9 @@ const CashflowManagement = () => {
         {/* Account Details Bar */}
         <Grid container spacing={2} sx={{ mb: 4 }}>
           {['Rekening A', 'Rekening B']
-            .filter(acc => selectedAccountTab === 'ALL' || selectedAccountTab === acc)
+            .filter(acc => selectedAccountTab === acc)
             .map((acc) => (
-              <Grid item xs={12} md={selectedAccountTab === 'ALL' ? 6 : 12} key={acc}>
+              <Grid item xs={12} key={acc}>
                 <Card sx={{
                   borderRadius: 4,
                   boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
